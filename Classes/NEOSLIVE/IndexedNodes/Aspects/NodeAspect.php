@@ -41,13 +41,17 @@ class NodeAspect
 
         $nodeData = $joinPoint->getMethodArgument('object');
 
-        if ($nodeData->getNodeType()->hasConfiguration('neoslive')) {
-            // \typo3\flow\var_dump($nodeData->getNodeType()->getConfiguration('neoslive'));
+        if ($nodeData->getNodeType()->hasConfiguration('properties')) {
+            foreach ($nodeData->getNodeType()->getConfiguration('properties') as $propertyKey => $propertyVal) {
+                if (isset($propertyVal['indexed'])) {
+                    
+                }
+
+            }
 
         }
 
     }
-
 
 
 }
