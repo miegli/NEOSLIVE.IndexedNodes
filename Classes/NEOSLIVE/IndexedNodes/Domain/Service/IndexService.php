@@ -14,6 +14,7 @@ namespace NEOSLIVE\IndexedNodes\Domain\Service;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeData;
+use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use TYPO3\TYPO3CR\Domain\Repository\NodeDataRepository;
@@ -88,7 +89,153 @@ class IndexService implements IndexServiceInterface
 
 
 
+    /**
+     * Get indexed nodes by given node and its filters
+     *
+     * @param Node $basenode
+     * @return array
+     */
+    public function getNodes(Node $basenode) {
 
+
+        $limit = false;
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'])) {
+
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'] as $limitProperty => $limitValues) {
+
+                foreach ($limitValues as $limitValueType => $limitValue) {
+                    switch ($limitValueType) {
+
+                        case 'property':
+                            if ($basenode->getProperty($limitValue)) $limit = $basenode->getProperty($limitValue);
+                            break;
+
+                        case 'value':
+                            $limit = $limitValue;
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                }
+
+            }
+
+        }
+        
+        
+        $filters = array();
+
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['filteredProperties'])) {
+
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['filteredProperties'] as $filteredProperty => $filterValues) {
+
+                foreach ($filterValues as $filterValueType => $filterValue) {
+                    switch ($filterValueType) {
+
+                        case 'property':
+                           if ($basenode->getProperty($filterValue)) $filters[$filteredProperty][] = $basenode->getProperty($filterValue);
+                        break;
+
+                        case 'value':
+                           $filters[$filteredProperty][] = $filterValue;
+                        break;
+
+                        default:
+                        break;
+                    }
+
+                }
+
+
+            }
+
+        }
+
+
+
+        $orderBy = array();
+
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'])) {
+
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'] as $orderedByProperty => $orderedByValues) {
+
+
+
+                foreach ($orderedByValues as $orderedByValueType => $orderedByValue) {
+                    switch ($orderedByValueType) {
+
+                        case 'property':
+                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['property'] = $basenode->getProperty($orderedByValue);
+                            break;
+
+                        case 'value':
+                            $orderBy[$orderedByProperty]['property'] = $orderedByValue;
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                }
+
+
+            }
+
+        }
+
+
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'])) {
+
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'] as $orderedByProperty => $orderedByValues) {
+
+                foreach ($orderedByValues as $orderedByValueType => $orderedByValue) {
+                    switch ($orderedByValueType) {
+
+                        case 'property':
+                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['direction'] = $basenode->getProperty($orderedByValue);
+                            break;
+
+                        case 'value':
+                            $orderBy[$orderedByProperty]['direction'] = $orderedByValue;
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                }
+
+
+            }
+
+        }
+
+
+        $nodeTypes = array();
+
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeTypes'])) {
+
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeTypes'] as $nodeType => $nodeTypeValue) {
+                $nodeTypes[] = $nodeType;
+            }
+
+        }
+
+
+
+
+
+       return $this->indexRepository->getFilteredNodes(
+           $nodeTypes,
+           $filters,
+           $orderBy,
+           $limit
+       );
+
+
+    }
 
 
 

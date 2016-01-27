@@ -2,7 +2,7 @@
 'NEOSLIVE.IndexedNodes:Container':
   abstract: TRUE
   superTypes:
-    'TYPO3.Neos:Content': TRUE
+     'TYPO3.Neos:Content': TRUE
   ui:
     label: 'Container'
     group: 'structure'

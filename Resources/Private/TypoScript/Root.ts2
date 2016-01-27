@@ -1,7 +1,10 @@
 # Container TS Object
-prototype(NEOSLIVE.IndexedNodes:Container) {
+prototype(NEOSLIVE.IndexedNodes:Container) < prototype(TYPO3.Neos:Content) {
+
+	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
 
 
+	itemRendering = TYPO3.Neos:ContentCase
 
 	@cache {
 		mode = 'uncached'
@@ -11,8 +14,5 @@ prototype(NEOSLIVE.IndexedNodes:Container) {
 		}
 	}
 
-	test = ${NEOSLIVE.IndexedNodes.get('Hello World')}
-	abc = 1
-	recursivLevels = ${NEOSLIVE.IndexedNodes.get('Hello World')}
 
 }

@@ -11,6 +11,7 @@ namespace NEOSLIVE\IndexedNodes\Domain\Service;
  */
 
 use TYPO3\TYPO3CR\Domain\Model\NodeData;
+use TYPO3\TYPO3CR\Domain\Model\Node;
 
 /**
  * Provides generic methods to manage and work with Nodes Index
@@ -19,6 +20,7 @@ use TYPO3\TYPO3CR\Domain\Model\NodeData;
  */
 interface IndexServiceInterface
 {
+
     /**
      * Sets node index property values on the given node.
      *
@@ -37,6 +39,16 @@ interface IndexServiceInterface
      * @return void
      */
     public function removeIndex(NodeData $nodeData);
+
+
+    /**
+     * Get indexed nodes by given node and its filters
+     *
+     * @param Node $node
+     * @return array
+     */
+    public function getNodes(Node $node);
+
 
 
 }
