@@ -1,0 +1,18 @@
+# Container TS Object
+prototype(NEOSLIVE.IndexedNodes:Container) {
+
+
+
+	@cache {
+		mode = 'uncached'
+		context {
+			1 = 'node'
+			2 = 'documentNode'
+		}
+	}
+
+	test = ${NEOSLIVE.IndexedNodes.get('Hello World')}
+	abc = 1
+	recursivLevels = ${NEOSLIVE.IndexedNodes.get('Hello World')}
+
+}

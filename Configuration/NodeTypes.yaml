@@ -1,0 +1,47 @@
+
+'NEOSLIVE.IndexedNodes:Container':
+  abstract: TRUE
+  superTypes:
+    'TYPO3.Neos:Content': TRUE
+  ui:
+    label: 'Container'
+    group: 'structure'
+    icon: 'icon-sitemap'
+    position: 100
+    inspector:
+      groups:
+        options:
+          label: 'Optionen'
+          position: 30
+  properties:
+    recursivLevels:
+      type: string
+      defaultValue: '-1'
+      ui:
+        label: 'Levels (rekursiv)'
+        inspector:
+          group: 'options'
+          editor: 'TYPO3.Neos/Inspector/Editors/SelectBoxEditor'
+          editorOptions:
+            values:
+              '-1':
+                label: 'unendlich'
+              '0':
+                label: '0'
+              '1':
+                label: '1'
+              '2':
+                label: '2'
+              '3':
+                label: '3'
+              '4':
+                label: '4'
+              '5':
+                label: '5'
+    selection:
+      type: 'references'
+      ui:
+        reloadIfChanged: TRUE
+        label: 'Einstiegspunkte'
+        inspector:
+          group: 'options'

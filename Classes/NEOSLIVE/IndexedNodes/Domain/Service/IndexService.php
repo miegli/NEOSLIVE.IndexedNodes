@@ -60,10 +60,8 @@ class IndexService implements IndexServiceInterface
     public function setIndexValue(NodeData $nodeData,$propertyname) {
 
 
-        $index = $this->getIndexByNodeData($nodeData);
-
-
-        $index->setIndexData($propertyname,time());
+        $index = $this->indexRepository->getByNodeDataOrCreate($nodeData);
+        $index->setIndexData($propertyname,$nodeData->getProperty($propertyname));
 
         $this->indexRepository->update($index);
 
@@ -71,21 +69,26 @@ class IndexService implements IndexServiceInterface
 
     }
 
-
-
     /**
-     * gets node index by property and dimensionhash
+     * Remove node index on the given nodedata.
      *
      * @param NodeData $nodeData
      * @return void
      */
-    public function getIndexByNodeData(NodeData $nodeData) {
+    public function removeIndex(NodeData $nodeData) {
 
 
-        return $this->indexRepository->getByNodeDataOrCreate($nodeData);
+        $index = $this->indexRepository->getByNodeData($nodeData);
+
+        if ($index) $this->indexRepository->remove($index);
+
 
 
     }
+
+
+
+
 
 
 

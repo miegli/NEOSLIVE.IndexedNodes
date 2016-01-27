@@ -18,7 +18,7 @@ class Index
 {
 
     /**
-     * @ORM\ManyToOne(inversedBy="dimensions")
+     * @ORM\ManyToOne(inversedBy="dimensions",cascade={"all"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      * @var \TYPO3\TYPO3CR\Domain\Model\NodeData
      */
@@ -84,6 +84,7 @@ class Index
 
         $indexData = $this->getIndexDataOrCreate($property);
         $indexData->setValue($value);
+        $indexData->setValueRaw(strip_tags($value));
 
 
     }

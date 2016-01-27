@@ -36,6 +36,31 @@ class IndexData
     protected $value;
 
 
+    /**
+     * Index property value
+     *
+     * @var string
+     * @ORM\Column(nullable=true)
+     */
+    protected $valueRaw;
+
+    /**
+     * @return string
+     */
+    public function getValueRaw()
+    {
+        return $this->valueRaw;
+    }
+
+    /**
+     * @param string $valueRaw
+     */
+    public function setValueRaw($valueRaw)
+    {
+        $this->valueRaw = $valueRaw;
+    }
+
+
 
 
     /**

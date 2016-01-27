@@ -50,6 +50,37 @@ class IndexRepository extends Repository
 
 
     }
+    /**
+     *
+     *
+     * Finds nodes index by its nodedata
+     *
+     *
+     * @param string $parentPath Absolute path of the parent node
+     * @param NodeData $nodeData
+     * @return mixed
+     */
+    public function getByNodeData(NodeData $nodeData)
+    {
+
+
+        $query = $this->createQuery();
+
+        $result = $query->matching(
+            $query->logicalAnd(
+                $query->equals('nodeData',$nodeData)
+            )
+
+        )->execute();
+
+
+        if ($result->count()) return $result->getFirst();
+
+
+        return null;
+
+
+    }
 
 
 

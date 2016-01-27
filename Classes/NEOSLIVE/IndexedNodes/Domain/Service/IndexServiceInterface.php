@@ -29,13 +29,14 @@ interface IndexServiceInterface
     public function setIndexValue(NodeData $nodeData,$propertyname);
 
 
+
     /**
-     * gets node index by property and dimensionhash
+     * Remove node index on the given nodedata.
      *
      * @param NodeData $nodeData
      * @return void
      */
-    public function getIndexByNodeData(NodeData $nodeData);
+    public function removeIndex(NodeData $nodeData);
 
 
 }

@@ -1,0 +1,13 @@
+TYPO3:
+  Neos:
+    typoScript:
+      autoInclude:
+        'NEOSLIVE.IndexedNodes': TRUE
+
+    userInterface:
+      translation:
+        autoInclude:
+
+  TypoScript:
+    defaultContext:
+      'NEOSLIVE.IndexedNodes': 'NEOSLIVE\IndexedNodes\Eel\Helper\NodeHelper'
