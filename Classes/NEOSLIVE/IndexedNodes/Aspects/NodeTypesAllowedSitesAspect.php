@@ -109,8 +109,8 @@ class NodeTypesAllowedSitesAspect {
 
 
             foreach ($allowedSites as $siteName => $allowed) {
-                if ($allowed == TRUE && ($siteName == '*' | $currentSite->getName() == $siteName)) return true;
-                if ($allowed == FALSE && $currentSite->getName() == $siteName) return false;
+                if ($allowed == TRUE && ($siteName == '*' | $currentSite->getSiteResourcesPackageKey() == $siteName)) return true;
+                if ($allowed == FALSE && $currentSite->getSiteResourcesPackageKey() == $siteName) return false;
                 if ($allowed == TRUE && $siteName == '*') $deniedWilcard = false;
                 if ($allowed == FALSE && $siteName == '*') $deniedWilcard = true;
             }
