@@ -95,6 +95,10 @@ class NodeTypesAllowedSitesAspect {
      */
     private function isNodeTypeInAllowedSite(NodeType $nodetype) {
 
+
+        // dont restrict abstract nodes
+        if ($nodetype->isAbstract()) return true;
+
         $deniedWilcard = false;
         $allowedSites = $nodetype->getConfiguration('allowedSites');
 
