@@ -13,6 +13,7 @@
         options:
           label: 'Optionen'
           position: 30
+    inlineEditable: TRUE
   properties:
     recursivLevels:
       type: string

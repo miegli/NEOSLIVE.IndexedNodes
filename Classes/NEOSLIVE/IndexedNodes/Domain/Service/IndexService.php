@@ -99,7 +99,7 @@ class IndexService implements IndexServiceInterface
 
 
         $limit = false;
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'])) {
 
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'] as $limitProperty => $limitValues) {
 
@@ -127,7 +127,7 @@ class IndexService implements IndexServiceInterface
         
         $filters = array();
 
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['filteredProperties'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['filteredProperties'])) {
 
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['filteredProperties'] as $filteredProperty => $filterValues) {
 
@@ -157,7 +157,7 @@ class IndexService implements IndexServiceInterface
 
         $orderBy = array();
 
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'])) {
 
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'] as $orderedByProperty => $orderedByValues) {
 
@@ -186,7 +186,7 @@ class IndexService implements IndexServiceInterface
         }
 
 
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'])) {
 
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'] as $orderedByProperty => $orderedByValues) {
 
@@ -215,14 +215,13 @@ class IndexService implements IndexServiceInterface
 
         $nodeTypes = array();
 
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && isset($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeTypes'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeTypes'])) {
 
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeTypes'] as $nodeType => $nodeTypeValue) {
                 $nodeTypes[] = $nodeType;
             }
 
         }
-
 
 
 

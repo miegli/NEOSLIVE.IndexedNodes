@@ -3,6 +3,7 @@ prototype(NEOSLIVE.IndexedNodes:Container) < prototype(TYPO3.Neos:Content) {
 
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
 
+	class = ''
 
 	itemRendering = TYPO3.Neos:ContentCase
 
@@ -13,6 +14,5 @@ prototype(NEOSLIVE.IndexedNodes:Container) < prototype(TYPO3.Neos:Content) {
 			2 = 'documentNode'
 		}
 	}
-
 
 }

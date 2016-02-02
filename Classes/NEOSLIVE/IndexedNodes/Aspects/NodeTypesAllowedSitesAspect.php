@@ -111,6 +111,7 @@ class NodeTypesAllowedSitesAspect {
                 $currentSite = $this->siteRepository->findFirstOnline();
             }
 
+            if (!$currentSite) return true;
 
             foreach ($allowedSites as $siteName => $allowed) {
                 if ($allowed == TRUE && ($siteName == '*' | $currentSite->getSiteResourcesPackageKey() == $siteName)) return true;
