@@ -20,6 +20,7 @@ class Index
     /**
      * @ORM\ManyToOne(inversedBy="dimensions",cascade={"all"})
      * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinTable(joinColumns={@ORM\JoinColumn(onDelete="cascade")})
      * @var \TYPO3\TYPO3CR\Domain\Model\NodeData
      */
     protected $nodeData;
@@ -28,6 +29,8 @@ class Index
     /**
      * @ORM\ManyToMany(inversedBy="data",cascade={"all"},orphanRemoval=true)
      * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinTable(joinColumns={@ORM\JoinColumn(onDelete="cascade")})
+     * @ORM\OrderBy({"property" = "ASC"})
      * @var \Doctrine\Common\Collections\Collection<\NEOSLIVE\IndexedNodes\Domain\Model\IndexData>
      */
     protected $indexData;
