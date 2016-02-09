@@ -6,16 +6,32 @@ namespace NEOSLIVE\IndexedNodes\Domain\Repository;
  */
 
 use NEOSLIVE\IndexedNodes\Domain\Service\IndexService;
+use TYPO3\Flow\Persistence\QueryInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Persistence\Repository;
 use TYPO3\TYPO3CR\Domain\Model\NodeData;
 use NEOSLIVE\IndexedNodes\Domain\Model\Index;
+use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
 
 /**
  * @Flow\Scope("singleton")
  */
 class IndexRepository extends Repository
 {
+
+
+    /**
+     * @Flow\Inject
+     * @var NodeTypeManager
+     */
+    protected $nodeTypeManager;
+
+    /**
+     * @Flow\Inject
+     * @var IndexService
+     */
+    protected $indexService;
+
 
     /**
      * Finds nodes index by its nodedata
@@ -33,7 +49,7 @@ class IndexRepository extends Repository
 
         $result = $query->matching(
             $query->logicalAnd(
-                $query->equals('nodeData',$nodeData)
+                $query->equals('nodeData', $nodeData)
             )
 
         )->execute();
@@ -70,7 +86,7 @@ class IndexRepository extends Repository
 
         $result = $query->matching(
             $query->logicalAnd(
-                $query->equals('nodeData',$nodeData)
+                $query->equals('nodeData', $nodeData)
             )
 
         )->execute();
@@ -80,6 +96,34 @@ class IndexRepository extends Repository
 
 
         return null;
+
+
+    }
+
+
+    /**
+     *
+     * Finds nodes index by its nodedata type
+     *
+     *
+     * @param string $nodetype
+     * @return mixed
+     */
+    public function getByNodeDataType($nodetype)
+    {
+
+
+        $query = $this->createQuery();
+
+        $result = $query->matching(
+            $query->logicalAnd(
+                $query->equals('nodeData.nodeType', $nodetype)
+            )
+
+        )->execute();
+
+
+        return $result;
 
 
     }
@@ -96,9 +140,8 @@ class IndexRepository extends Repository
      * @return \TYPO3\Flow\Persistence\QueryResultInterface The query result
      * @see \TYPO3\Flow\Persistence\QueryInterface::execute()
      */
-    public function getFilteredNodes($nodetypes,$filters,$orderBy,$limit)
+    public function getFilteredNodes($nodetypes, $filters, $orderBy, $limit, $workspace)
     {
-
 
 
         $query = $this->createQuery();
@@ -106,51 +149,94 @@ class IndexRepository extends Repository
 
         $nodetypesMatcherConditions = array();
 
-            foreach ($nodetypes as $k => $v) {
-                $nodetypesMatcherConditions[] = $query->equals('nodeData.nodeType',$v);
-            }
+        foreach ($nodetypes as $k => $v) {
+            $nodetypesMatcherConditions[] = $query->equals('nodeData.nodeType', $v);
+        }
 
 
         $filterMatcherConditions = array();
 
-            foreach ($filters as $itemKey => $v) {
+        foreach ($filters as $itemKey => $v) {
 
-                foreach ($v as $k => $itemValue) {
-                    $filterMatcherConditions[] = $query->logicalAnd(
-                        $query->equals('indexData.property',$itemKey),
-                        $query->like('indexData.valueRaw',$itemValue)
-                    );
-                }
-
-
+            foreach ($v as $k => $itemValue) {
+                $filterMatcherConditions[] = $query->logicalAnd(
+                    $query->equals('indexData.property', $itemKey),
+                    $query->like('indexData.valueRaw', $itemValue)
+                );
             }
 
 
+        }
 
-         $query->matching(
+
+        $query->matching(
             $query->logicalAnd(
+
+                $query->equals('nodeData.workspace', $workspace->getName()),
                 $query->logicalOr($nodetypesMatcherConditions),
                 $query->logicalAnd($filterMatcherConditions)
             )
         );
 
 
+        $orderingArray = array();
+        if (count($nodetypes) === 1) {
+
+            $nodeTypeName = $nodetypes[0];
+
+
+            foreach ($orderBy as $propertyName => $ordering) {
+                $oIndex = $this->indexService->getOrderingIndex($this->nodeTypeManager->getNodeType($nodeTypeName), $propertyName);
+                if ($oIndex >= 0) {
+
+
+                    if (isset($ordering['type']) == false) $ordering['type'] = 'string';
+
+                    switch ($ordering['type']) {
+
+                        case 'datetime':
+                            $oProperty = 'valueDateTime';
+                            break;
+
+                        case 'integer':
+                            $oProperty = 'valueInteger';
+                            break;
+
+                        default:
+                            $oProperty = 'valueRaw';
+                            break;
+
+
+                    }
+
+
+                    if (isset($ordering['direction']) && $ordering['direction'] == QueryInterface::ORDER_DESCENDING) {
+                        $oDirection = QueryInterface::ORDER_DESCENDING;
+                    } else {
+                        $oDirection = QueryInterface::ORDER_ASCENDING;
+                    }
+
+                    $orderingArray['orderIndex' . $oIndex . '.' . $oProperty] = $oDirection;
+
+                }
+            }
+
+
+        }
+
+
+        if (count($orderingArray)) {
+            $query->setOrderings($orderingArray);
+        }
 
 
         if ($limit) $query->setLimit($limit);
 
 
-
-
         return $query->execute();
 
 
-
-
     }
-
-
-
 
 
 }

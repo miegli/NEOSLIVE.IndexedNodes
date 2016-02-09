@@ -9,7 +9,6 @@ use TYPO3\Flow\Annotations as Flow;
 use Doctrine\ORM\Mapping as ORM;
 
 
-
 /**
  * @Flow\Entity
  */
@@ -25,7 +24,6 @@ class IndexData
      */
     protected $property;
 
-
     /**
      * Index property value
      *
@@ -34,14 +32,69 @@ class IndexData
      */
     protected $value;
 
-
     /**
      * Index property value
      *
      * @var string
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(nullable=true,type="text")
      */
     protected $valueRaw;
+
+    /**
+     * Index property value cast as date
+     *
+     * @var \DateTime
+     * @ORM\Column(nullable=true)
+     */
+    protected $valueDateTime;
+
+
+    /**
+     * Index property value cast as integer
+     *
+     * @var Integer
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    protected $valueInteger;
+
+
+
+
+    /**
+     * @return \DateTime
+     */
+    public function getValueDateTime()
+    {
+        return $this->valueDateTime;
+    }
+
+    /**
+     * @param \DateTime $valueDateTime
+     */
+    public function setValueDateTime($valueDateTime)
+    {
+        $this->valueDateTime = $valueDateTime;
+    }
+
+    /**
+     * @return int
+     */
+    public function getValueInteger()
+    {
+        return $this->valueInteger;
+    }
+
+    /**
+     * @param int $valueInteger
+     */
+    public function setValueInteger($valueInteger)
+    {
+        $this->valueInteger = $valueInteger;
+    }
+
+
+
+
 
     /**
      * @return string
@@ -58,9 +111,6 @@ class IndexData
     {
         $this->valueRaw = $valueRaw;
     }
-
-
-
 
     /**
      * @return string

@@ -24,6 +24,7 @@ use NEOSLIVE\IndexedNodes\Domain\Model\IndexData;
 use NEOSLIVE\IndexedNodes\Domain\Repository\IndexRepository;
 use NEOSLIVE\IndexedNodes\Domain\Repository\IndexDataRepository;
 
+
 /**
  * Provide method to manage node
  *
@@ -61,14 +62,59 @@ class IndexService implements IndexServiceInterface
     public function setIndexValue(NodeData $nodeData,$propertyname) {
 
 
+        $orderingIndex = $this->getOrderingIndex($nodeData,$propertyname);
         $index = $this->indexRepository->getByNodeDataOrCreate($nodeData);
-        $index->setIndexData($propertyname,$nodeData->getProperty($propertyname));
+        $indexData = $index->setIndexData($propertyname,$nodeData->getProperty($propertyname));
+        if ($orderingIndex >= 0) {
+            if ($index->setOrderIndex($orderingIndex,$indexData,$this->getOrderingHash($nodeData))) {
+                // ordering index hash is still valide
+            } else {
+                // ordering index hash is not valide anymore, please update all index by given node
+                $this->reIndexAll($nodeData);
+
+            }
+        }
 
         $this->indexRepository->update($index);
 
 
 
     }
+
+
+
+    /**
+     * re-index all node data
+     *
+     * @param NodeData $nodeData
+     * @return void
+     */
+    public function reIndexAll(NodeData $nodeData) {
+
+
+        $nodes = $this->indexRepository->getByNodeDataType($nodeData->getNodeType()->getName());
+
+
+
+        foreach ($nodes as $nodeIndex) {
+
+
+            for ($i=0;$i<10;$i++) {
+                $nodeIndex->clearOrderIndex($i);
+            }
+
+            $indexes = $this->getOrderingIndexAll($nodeData);
+            foreach ($indexes as $key => $propertyName) {
+               $nodeIndex->setOrderIndex($key,$nodeIndex->getIndexDataOrCreate($propertyName),$this->getOrderingHash($nodeData));
+            }
+
+            $this->indexRepository->update($nodeIndex);
+
+        }
+
+
+    }
+
 
     /**
      * Remove node index on the given nodedata.
@@ -87,6 +133,77 @@ class IndexService implements IndexServiceInterface
 
     }
 
+
+
+    /**
+     * Get properties ordering index
+     *
+     * @param mixed $nodeData
+     * @param string $propertyname
+     * @return integer
+     */
+    public function getOrderingIndex($nodeData,$propertyname) {
+
+        if ($nodeData instanceof nodeData) $nodeType = $nodeData->getNodeType();
+        if ($nodeData instanceof nodeType) $nodeType = $nodeData;
+
+        $i = 0;
+        foreach ($nodeType->getConfiguration('indexedNodes')['properties'] as $key => $val) {
+            if ($key == $propertyname) {
+                if ($i<10) return $i;
+            }
+            $i++;
+        }
+
+        return -1;
+
+    }
+
+
+    /**
+     * Get properties ordering index
+     *
+     * @param mixed $nodeData
+     * @return integer
+     */
+    public function getOrderingIndexAll($nodeData) {
+
+
+        if ($nodeData instanceof nodeData) $nodeType = $nodeData->getNodeType();
+        if ($nodeData instanceof nodeType) $nodeType = $nodeData;
+
+
+        $data = array();
+        $i=0;
+        foreach ($nodeType->getConfiguration('indexedNodes')['properties'] as $key => $val) {
+                if ($i<10) $data[] = $key;
+            $i++;
+        }
+
+
+        return $data;
+
+    }
+
+
+
+
+    /**
+     * Get properties ordering hash
+     *
+     * @param NodeData $nodeData
+     * @return string
+     */
+    public function getOrderingHash(NodeData $nodeData) {
+
+        $data = '';
+        foreach ($nodeData->getNodeType()->getConfiguration('indexedNodes')['properties'] as $key => $val) {
+            $data .= $key.":";
+        }
+
+        return md5($data);
+
+    }
 
 
     /**
@@ -162,42 +279,22 @@ class IndexService implements IndexServiceInterface
             foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'] as $orderedByProperty => $orderedByValues) {
 
 
-
                 foreach ($orderedByValues as $orderedByValueType => $orderedByValue) {
                     switch ($orderedByValueType) {
 
                         case 'property':
-                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['property'] = $basenode->getProperty($orderedByValue);
+                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['value'] = $basenode->getProperty($orderedByValue);
                             break;
 
                         case 'value':
-                            $orderBy[$orderedByProperty]['property'] = $orderedByValue;
+                            $orderBy[$orderedByProperty]['value'] = $orderedByValue;
                             break;
 
-                        default:
-                            break;
-                    }
-
-                }
-
-
-            }
-
-        }
-
-
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'])) {
-
-            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByDirections'] as $orderedByProperty => $orderedByValues) {
-
-                foreach ($orderedByValues as $orderedByValueType => $orderedByValue) {
-                    switch ($orderedByValueType) {
-
-                        case 'property':
-                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['direction'] = $basenode->getProperty($orderedByValue);
+                        case 'type':
+                            $orderBy[$orderedByProperty]['type'] = $orderedByValue;
                             break;
 
-                        case 'value':
+                        case 'direction':
                             $orderBy[$orderedByProperty]['direction'] = $orderedByValue;
                             break;
 
@@ -205,12 +302,17 @@ class IndexService implements IndexServiceInterface
                             break;
                     }
 
+
                 }
+
+
 
 
             }
 
         }
+
+
 
 
         $nodeTypes = array();
@@ -230,7 +332,8 @@ class IndexService implements IndexServiceInterface
            $nodeTypes,
            $filters,
            $orderBy,
-           $limit
+           $limit,
+           $basenode->getWorkspace()
        );
 
 
