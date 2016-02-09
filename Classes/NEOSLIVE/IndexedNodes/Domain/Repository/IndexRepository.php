@@ -182,11 +182,21 @@ class IndexRepository extends Repository
         $orderingArray = array();
         if (count($nodetypes) === 1) {
 
+
             $nodeTypeName = $nodetypes[0];
 
 
             foreach ($orderBy as $propertyName => $ordering) {
+
+
                 $oIndex = $this->indexService->getOrderingIndex($this->nodeTypeManager->getNodeType($nodeTypeName), $propertyName);
+                if (isset($ordering['direction']) && $ordering['direction'] == QueryInterface::ORDER_DESCENDING) {
+                    $oDirection = QueryInterface::ORDER_DESCENDING;
+                } else {
+                    $oDirection = QueryInterface::ORDER_ASCENDING;
+                }
+
+
                 if ($oIndex >= 0) {
 
 
@@ -210,13 +220,44 @@ class IndexRepository extends Repository
                     }
 
 
-                    if (isset($ordering['direction']) && $ordering['direction'] == QueryInterface::ORDER_DESCENDING) {
-                        $oDirection = QueryInterface::ORDER_DESCENDING;
-                    } else {
-                        $oDirection = QueryInterface::ORDER_ASCENDING;
+                    $orderingArray['orderIndex' . $oIndex . '.' . $oProperty] = $oDirection;
+
+                } else {
+
+
+                    // try to sort by default nodedata properties
+                    switch (strtolower($propertyName)) {
+
+                        case 'parentpath':
+                            $orderingArray['nodeData.parentPath'] = $oDirection;
+                            break;
+
+                        case 'index':
+                            $orderingArray['nodeData.index'] = $oDirection;
+                            break;
+
+                        case 'sortingindex':
+                            $orderingArray['nodeData.index'] = $oDirection;
+                            break;
+
+                        case 'lastmodificationdatetime':
+                            $orderingArray['nodeData.lastModificationDateTime'] = $oDirection;
+                            break;
+
+                        case 'lastpublicationdatetime':
+                            $orderingArray['nodeData.lastPublicationDateTime'] = $oDirection;
+                            break;
+
+                        case 'creationdatetime':
+                            $orderingArray['nodeData.creationDateTime'] = $oDirection;
+                            break;
+
+                        default:
+
+                            break;
+
                     }
 
-                    $orderingArray['orderIndex' . $oIndex . '.' . $oProperty] = $oDirection;
 
                 }
             }
