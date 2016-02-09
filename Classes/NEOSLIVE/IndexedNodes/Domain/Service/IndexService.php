@@ -274,16 +274,20 @@ class IndexService implements IndexServiceInterface
 
         $orderBy = array();
 
-        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'])) {
+        if ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedBy'])) {
 
-            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedByProperties'] as $orderedByProperty => $orderedByValues) {
+            foreach ($basenode->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['orderedBy'] as $orderedByProperty => $orderedByValues) {
 
 
                 foreach ($orderedByValues as $orderedByValueType => $orderedByValue) {
                     switch ($orderedByValueType) {
 
                         case 'property':
-                            if ($basenode->getProperty($orderedByValue)) $orderBy[$orderedByProperty]['value'] = $basenode->getProperty($orderedByValue);
+                            if ($basenode->getProperty($orderedByValue)) {
+                                $orderBy[$orderedByProperty]['value'] = $basenode->getProperty($orderedByValue);
+                            } else {
+                                $orderBy[$orderedByProperty]['value'] = $orderedByValue;
+                            }
                             break;
 
                         case 'value':
@@ -295,7 +299,13 @@ class IndexService implements IndexServiceInterface
                             break;
 
                         case 'direction':
-                            $orderBy[$orderedByProperty]['direction'] = $orderedByValue;
+
+                            if ($basenode->getProperty($orderedByValue)) {
+                                $orderBy[$orderedByProperty]['direction'] = $basenode->getProperty($orderedByValue);
+                            } else {
+                                $orderBy[$orderedByProperty]['direction'] = $orderedByValue;
+                            }
+
                             break;
 
                         default:

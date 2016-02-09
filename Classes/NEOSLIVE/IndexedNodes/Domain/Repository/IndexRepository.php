@@ -144,6 +144,7 @@ class IndexRepository extends Repository
     {
 
 
+
         $query = $this->createQuery();
 
 
@@ -189,7 +190,7 @@ class IndexRepository extends Repository
             foreach ($orderBy as $propertyName => $ordering) {
 
 
-                $oIndex = $this->indexService->getOrderingIndex($this->nodeTypeManager->getNodeType($nodeTypeName), $propertyName);
+                $oIndex = $this->indexService->getOrderingIndex($this->nodeTypeManager->getNodeType($nodeTypeName), $ordering['value']);
                 if (isset($ordering['direction']) && $ordering['direction'] == QueryInterface::ORDER_DESCENDING) {
                     $oDirection = QueryInterface::ORDER_DESCENDING;
                 } else {
@@ -226,7 +227,7 @@ class IndexRepository extends Repository
 
 
                     // try to sort by default nodedata properties
-                    switch (strtolower($propertyName)) {
+                    switch (strtolower($ordering['value'])) {
 
                         case 'parentpath':
                             $orderingArray['nodeData.parentPath'] = $oDirection;
@@ -264,6 +265,8 @@ class IndexRepository extends Repository
 
 
         }
+
+
 
 
         if (count($orderingArray)) {
