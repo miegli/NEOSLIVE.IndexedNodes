@@ -207,6 +207,8 @@ class IndexRepository extends Repository
 
                             case 'datetime':
                                 $oProperty = 'indexData.valueDateTime';
+                                $filter['operand'] = new \DateTime(strtotime($filter['operand']));
+                                \typo3\flow\var_dump( $filter['operand']);
                                 break;
 
                             case 'integer':
@@ -221,6 +223,15 @@ class IndexRepository extends Repository
                     } else {
 
                         //try to sort by default nodedata properties
+
+
+                        switch ($filter['type']) {
+
+                            case 'datetime':
+                                $filter['operand'] = $this->calculateDateFromString($filter['operand']);
+                                break;
+
+                        }
 
                         switch (strtolower($property)) {
 
@@ -414,6 +425,58 @@ class IndexRepository extends Repository
 
 
 }
+
+
+    /**
+     * @param string $shortValue
+     * @return \DateTime
+     */
+    public function calculateDateFromString($shortValue)
+    {
+
+        preg_match("/([0-9]{2})\.([0-9]{2})\.([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})|([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})|([0-9]{2})\.([0-9]{2})\.([0-9]{4}) ([0-9]{2}):([0-9]{2})|([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2})|([0-9]{2})\.([0-9]{2})\.([0-9]{4})|([0-9]{4})-([0-9]{2})-([0-9]{2})/", $shortValue, $matches);
+
+        $date = new \DateTime();
+        $match = false;
+
+        // dd.mm.YYY hh:ii:ss
+        if ((isset($matches[6]) && $matches[1] && $matches[2] && $matches[3] && $matches[4] && $matches[5] && $matches[6])) {
+            $date->setDate(intval($matches[3]), intval($matches[2]), intval($matches[1]));
+            $date->setTime(intval($matches[4]), intval($matches[5]), intval($matches[6]));
+            $match = true;
+        }
+        // dd.mm.YYY hh:ii
+        if ($match === false && (isset($matches[17]) && $matches[13] && $matches[14] && $matches[15] && $matches[16] && $matches[17])) {
+            $date->setDate(intval($matches[15]), intval($matches[14]), intval($matches[13]));
+            $date->setTime(intval($matches[16]), intval($matches[17]));
+            $match = true;
+        }
+        // dd.mm.YYYY
+        if ($match === false && (isset($matches[23]) && $matches[23] && $matches[24] && $matches[25])) {
+            $date->setDate(intval($matches[25]), intval($matches[24]), intval($matches[23]));
+            $match = true;
+        }
+        // YYYY-mm-dd
+        if ($match === false && (isset($matches[26]) && $matches[26] && $matches[27] && $matches[28])) {
+            $date->setDate(intval($matches[26]), intval($matches[27]), intval($matches[28]));
+            $match = true;
+        }
+
+        // yyyy-mm-dd hh:ii:ss || yyyy-mm-dd hh:ii
+        if ($match === false && (isset($matches[22]) && $matches[18] && $matches[19] && $matches[20] && $matches[21] && $matches[22]) | (isset($matches[12]) && $matches[7] && $matches[8] && $matches[9] && $matches[10] && $matches[11] && $matches[12])) {
+            $date->setTimestamp(strtotime($matches[0]));
+            $match = true;
+        }
+
+        if ($match === false) {
+            $ts = strtotime($shortValue);
+            $date->setTimestamp($ts);
+
+        }
+
+        return $date;
+    }
+
 
 
 }

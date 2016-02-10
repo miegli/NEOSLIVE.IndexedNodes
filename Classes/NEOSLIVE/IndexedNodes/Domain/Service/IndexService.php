@@ -488,8 +488,6 @@ class IndexService implements IndexServiceInterface
 
                     }
 
-
-
                 }
 
             } else {
@@ -603,6 +601,8 @@ class IndexService implements IndexServiceInterface
 
 
     }
+
+
 
 
 }
