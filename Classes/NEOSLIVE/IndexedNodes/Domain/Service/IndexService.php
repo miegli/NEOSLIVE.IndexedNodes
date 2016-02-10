@@ -273,6 +273,7 @@ class IndexService implements IndexServiceInterface
     public function prepareNodeSelectionFromNode(Node $node)
     {
 
+
         $this->workspace = $node->getWorkspace();
 
 
@@ -282,6 +283,7 @@ class IndexService implements IndexServiceInterface
         $sort = array();
         $nodetype = false;
         $entryNodes = array();
+        $nodeParentPath = $node->getParentPath();
 
 
         if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')) {
@@ -436,11 +438,11 @@ class IndexService implements IndexServiceInterface
             }
 
             // calculate entry nodes
-            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['entryNodes'])) {
+
+
+            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('entryNodes',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')) ) {
 
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['entryNodes'] as $property => $filterValues) {
-
-
 
                     foreach ($filterValues as $key => $value) {
                         switch ($key) {
@@ -460,7 +462,10 @@ class IndexService implements IndexServiceInterface
 
                         if (isset($entryNodes[$property]['recursive']) == false) $entryNodes[$property]['recursive'] = TRUE;
 
-                        if (isset($entryNodes[$property]['value'])) {
+
+
+
+                        if (isset($entryNodes[$property]['value']) && is_array($entryNodes[$property]['value']) == false) {
                             $targetNode = $this->nodeDataRepository->findOneByIdentifier($entryNodes[$property]['value'], $this->workspace);
                             if ($targetNode) {
                                 $entryNodes[$property]['path'] = $targetNode->getParentPath();
@@ -470,7 +475,8 @@ class IndexService implements IndexServiceInterface
                     }
 
 
-                    if (is_array($entryNodes[$property]['value'])) {
+                    if (isset($entryNodes[$property]['value']) && is_array($entryNodes[$property]['value'])) {
+
                         $t = $entryNodes[$property];
                         unset($entryNodes[$property]);
                         foreach ($t['value'] as $key => $val) {
@@ -485,6 +491,12 @@ class IndexService implements IndexServiceInterface
 
 
                 }
+
+            } else {
+                // set reference to self node
+                $entryNodes['self'] = array(
+                    'path' => $node->getParentPath()
+                );
 
             }
 

@@ -142,7 +142,6 @@ class IndexRepository extends Repository
 
 
 
-
         $query = $this->createQuery();
         $nodeMatcherConditions = array();
 
@@ -156,6 +155,7 @@ class IndexRepository extends Repository
         // set entrypoint query
         if (isset($selection['entryNodes']) && is_array($selection['entryNodes'])) {
             $entrypointConditions = array();
+
             foreach ($selection['entryNodes'] as $key => $val) {
 
                 if (isset($val['path'])) {
@@ -170,11 +170,12 @@ class IndexRepository extends Repository
                     }
 
                 } else {
-                    $entrypointConditions[] = $query->equals('nodeData.parentpath','');
+                        $entrypointConditions[] = $query->equals('nodeData.parentpath','');
                 }
 
 
             }
+
 
             if (count($entrypointConditions) > 0) $nodeMatcherConditions[] = $query->logicalOr($entrypointConditions);
         }
