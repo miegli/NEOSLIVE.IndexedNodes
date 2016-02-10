@@ -142,6 +142,7 @@ class IndexRepository extends Repository
 
 
 
+
         $query = $this->createQuery();
         $nodeMatcherConditions = array();
 
@@ -158,6 +159,8 @@ class IndexRepository extends Repository
             foreach ($selection['entryNodes'] as $key => $val) {
 
                 if (isset($val['path'])) {
+
+                    if (isset($val['recursive']) == FALSE) $val['recursive'] = TRUE;
 
                     if (isset($val['recursive']) && $val['recursive'] == TRUE) {
                         $entrypointConditions[] = $query->like('nodeData.path',$val['path'].'%');

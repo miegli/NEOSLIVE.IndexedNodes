@@ -441,6 +441,7 @@ class IndexService implements IndexServiceInterface
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['entryNodes'] as $property => $filterValues) {
 
 
+
                     foreach ($filterValues as $key => $value) {
                         switch ($key) {
                             case 'property':
@@ -466,8 +467,21 @@ class IndexService implements IndexServiceInterface
                             }
                         }
 
+                    }
+
+
+                    if (is_array($entryNodes[$property]['value'])) {
+                        $t = $entryNodes[$property];
+                        unset($entryNodes[$property]);
+                        foreach ($t['value'] as $key => $val) {
+                            $entryNodes[$property.$key] = array(
+                                'path' => $val->getParentPath(),
+                                'recursive' => $t['recursive']
+                            );
+                        }
 
                     }
+
 
 
                 }
