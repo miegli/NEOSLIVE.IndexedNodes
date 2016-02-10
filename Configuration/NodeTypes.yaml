@@ -46,3 +46,51 @@
         label: 'Einstiegspunkte'
         inspector:
           group: 'options'
+
+
+
+
+# sample definition
+# indexedNodes:
+#   nodeType:
+#     value: 'PHLU.Web:Text'
+#     property: 'orderDirection2'
+#     param: 'test'
+#   entryNodes:
+#     'entrypoint1':
+#       value: 'fsdfsdf'
+#       property: 'filter1'
+#       param: 'q'
+#       recursive: FALSE
+#   filter:
+#     'text':
+#       type: 'string'
+#       operator:
+#         value: 'fsdfsdf'
+#         property: 'filter'
+#         param: 'q'
+#       operand:
+#         value: '1'
+#         property: 'filter'
+#         param: 'o'
+#   sort:
+#     'kritierum1':
+#       value: 'fsdfsdf'
+#       property: 'order1'
+#       param: 'sort'
+#       type: 'string'
+#       direction:
+#         value: 'ASC'
+#         property: 'orderDirection2'
+#         param: 'sortdirection'
+#   limit:
+#     value: '10'
+#     property: 'limit'
+#     param: 'limit'
+#   offset:
+#     value: '0'
+#     property: 'limit'
+#     param: 'limit'
+
+
+

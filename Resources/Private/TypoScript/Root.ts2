@@ -3,6 +3,7 @@ prototype(NEOSLIVE.IndexedNodes:Container) < prototype(TYPO3.Neos:Content) {
 
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
 
+
 	class = ''
 
 	itemRendering = TYPO3.Neos:ContentCase
