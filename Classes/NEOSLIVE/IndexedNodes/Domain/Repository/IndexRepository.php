@@ -154,30 +154,37 @@ class IndexRepository extends Repository
 
         // set entrypoint query
         if (isset($selection['entryNodes']) && is_array($selection['entryNodes'])) {
+
             $entrypointConditions = array();
 
             foreach ($selection['entryNodes'] as $key => $val) {
 
                 if (isset($val['path'])) {
 
-                    if (isset($val['recursive']) == FALSE) $val['recursive'] = TRUE;
+                    if (isset($val['recursive']) == FALSE) $val['recursive'] = FALSE;
 
                     if (isset($val['recursive']) && $val['recursive'] == TRUE) {
                         $entrypointConditions[] = $query->like('nodeData.path',$val['path'].'%');
                     } else {
-                        $entrypointConditions[] = $query->equals('nodeData.parentpath',$val['path']);
+                        foreach ($val['childNodes'] as $path => $data) {
+
+                            $entrypointConditions[] = $query->like('nodeData.parentPath',$val['path'].'/'.$path);
+                        }
+
 
                     }
 
                 } else {
-                        $entrypointConditions[] = $query->equals('nodeData.parentpath','');
+                        $entrypointConditions[] = $query->like('nodeData.parentpath','');
                 }
 
 
             }
 
 
-            if (count($entrypointConditions) > 0) $nodeMatcherConditions[] = $query->logicalOr($entrypointConditions);
+            if (count($entrypointConditions) > 0) {
+                $nodeMatcherConditions[] = $query->logicalOr($entrypointConditions);
+            }
         }
 
 
@@ -223,14 +230,10 @@ class IndexRepository extends Repository
                     } else {
 
                         //try to sort by default nodedata properties
-
-
                         switch ($filter['type']) {
-
                             case 'datetime':
                                 $filter['operand'] = $this->calculateDateFromString($filter['operand']);
                                 break;
-
                         }
 
                         switch (strtolower($property)) {
@@ -425,6 +428,8 @@ class IndexRepository extends Repository
 
 
 }
+
+
 
 
     /**

@@ -480,8 +480,11 @@ class IndexService implements IndexServiceInterface
                         $t = $entryNodes[$property];
                         unset($entryNodes[$property]);
                         foreach ($t['value'] as $key => $val) {
+
                             $entryNodes[$property.$key] = array(
-                                'path' => $val->getParentPath(),
+                                'path' => $val->getPath(),
+                                'parentPath' => $val->getParentPath(),
+                                'childNodes' => $val->getNodeType()->getChildNodes(),
                                 'recursive' => $t['recursive']
                             );
                         }
