@@ -164,12 +164,19 @@ class IndexRepository extends Repository
                     if (isset($val['recursive']) == FALSE) $val['recursive'] = FALSE;
 
                     if (isset($val['recursive']) && $val['recursive'] == TRUE) {
-                        $entrypointConditions[] = $query->like('nodeData.path',$val['path'].'%');
+                        $and = array();
+                        $and[] = $query->like('nodeData.path',$val['path'].'%');
+                        if ($val['childNodePath']) $and[] = $query->like('nodeData.path','%/'.$val['childNodePath'].'/node-%');
+                        $entrypointConditions[] = $query->logicalAnd($and);
+
                     } else {
                         foreach ($val['childNodes'] as $path => $data) {
-
-                            $entrypointConditions[] = $query->like('nodeData.parentPath',$val['path'].'/'.$path);
+                            $and = array();
+                            $and[] = $query->like('nodeData.parentPath',$val['path'].'/'.$path);
+                            if ($val['childNodePath']) $and[] = $query->like('nodeData.path','%/'.$val['childNodePath'].'/node-%');
+                            $entrypointConditions[] = $query->logicalAnd($and);
                         }
+
 
 
                     }

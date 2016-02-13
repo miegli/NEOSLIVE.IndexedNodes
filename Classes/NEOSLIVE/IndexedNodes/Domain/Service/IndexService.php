@@ -458,9 +458,13 @@ class IndexService implements IndexServiceInterface
                             case 'recursive':
                                 $entryNodes[$property]['recursive'] = $value;
                                 break;
+                            case 'childNodePath':
+                                $entryNodes[$property]['childNodePath'] = $value;
+                                break;
                         }
 
                         if (isset($entryNodes[$property]['recursive']) == false) $entryNodes[$property]['recursive'] = TRUE;
+                        if (isset($entryNodes[$property]['childNodePath']) == false) $entryNodes[$property]['childNodePath'] = FALSE;
 
 
 
@@ -483,6 +487,7 @@ class IndexService implements IndexServiceInterface
 
                             $entryNodes[$property.$key] = array(
                                 'path' => $val->getPath(),
+                                'childNodePath' => $t['childNodePath'],
                                 'parentPath' => $val->getParentPath(),
                                 'childNodes' => $val->getNodeType()->getChildNodes(),
                                 'recursive' => $t['recursive']
