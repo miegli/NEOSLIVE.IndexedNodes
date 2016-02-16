@@ -36,8 +36,8 @@ class NodeHelper implements ProtectedContextAwareInterface {
         $nodesResult = $indexService->getNodes($node);
 
 
-        foreach ($nodesResult as $item) {
-            $nodes[] = $this->nodeFactory->createFromNodeData($item->getNodeData(), $node->getContext());
+        foreach ($nodesResult as $identifier => $item) {
+            $nodes[] = $this->nodeFactory->createFromNodeData($item, $node->getContext());
         }
 
         return $nodes;

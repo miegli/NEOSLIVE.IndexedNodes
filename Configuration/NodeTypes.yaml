@@ -1,5 +1,5 @@
 
-'NEOSLIVE.IndexedNodes:Container':
+'NEOSLIVE.IndexedNodes:Selection':
   abstract: TRUE
   superTypes:
      'TYPO3.Neos:Content': TRUE

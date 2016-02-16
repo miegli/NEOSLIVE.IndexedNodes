@@ -1,5 +1,5 @@
 # Container TS Object
-prototype(NEOSLIVE.IndexedNodes:Container) < prototype(TYPO3.Neos:Content) {
+prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {
 
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
 

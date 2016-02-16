@@ -170,10 +170,17 @@ class IndexRepository extends Repository
                         $entrypointConditions[] = $query->logicalAnd($and);
 
                     } else {
-                        foreach ($val['childNodes'] as $path => $data) {
+                        if (isset($val['childNodes'])) {
+                            foreach ($val['childNodes'] as $path => $data) {
+                                $and = array();
+                                $and[] = $query->like('nodeData.parentPath', $val['path'] . '/' . $path);
+                                if ($val['childNodePath']) $and[] = $query->like('nodeData.path', '%/' . $val['childNodePath'] . '/node-%');
+                                $entrypointConditions[] = $query->logicalAnd($and);
+                            }
+                        } else {
+                            // get only nodes on self path
                             $and = array();
-                            $and[] = $query->like('nodeData.parentPath',$val['path'].'/'.$path);
-                            if ($val['childNodePath']) $and[] = $query->like('nodeData.path','%/'.$val['childNodePath'].'/node-%');
+                            $and[] = $query->like('nodeData.path', $val['path'] . '%');
                             $entrypointConditions[] = $query->logicalAnd($and);
                         }
 
@@ -429,8 +436,24 @@ class IndexRepository extends Repository
         if (isset($selection['offset'])) $query->setOffset($selection['offset']);
 
 
+        $data = array();
+        foreach ($query->execute()->toArray() as $index) {
 
-        return $query->execute();
+
+
+
+            if (isset($data[$index->getNodeData()->getIdentifier()]) && $index->getNodeData()->getWorkspace()->getName() == 'live') {
+                // skip double nodes
+            } else {
+                $data[$index->getNodeData()->getIdentifier()] = $index->getNodeData();
+            }
+
+
+        }
+
+
+      return $data;
+
 
 
 
