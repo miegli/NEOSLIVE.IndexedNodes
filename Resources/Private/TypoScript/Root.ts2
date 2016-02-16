@@ -1,7 +1,10 @@
 # Container TS Object
 prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {
 
+	templatePath = 'resource://NEOSLIVE.IndexedNodes/Private/Templates/NodeTypes/IndexedNodesSelection.html'
+
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
+
 
 
 	class = ''
@@ -15,5 +18,6 @@ prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {
 			2 = 'documentNode'
 		}
 	}
+
 
 }

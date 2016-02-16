@@ -1,6 +1,8 @@
 {namespace ts=TYPO3\TypoScript\ViewHelpers}
 <div{attributes -> f:format.raw()}>
 <f:for each="{nodes}" as="item">
-    {item.properties.text -> f:format.raw()}
+
+    <ts:render path="itemRendering" context="{node: item}"/>
+
 </f:for>
 </div>

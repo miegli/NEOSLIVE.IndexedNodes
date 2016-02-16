@@ -25,6 +25,7 @@ use NEOSLIVE\IndexedNodes\Domain\Model\IndexData;
 use NEOSLIVE\IndexedNodes\Domain\Repository\IndexRepository;
 use NEOSLIVE\IndexedNodes\Domain\Repository\IndexDataRepository;
 use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
+use TYPO3\Neos\Domain\Service\ContentContextFactory;
 use TYPO3\Flow\Http\Request;
 
 
@@ -36,6 +37,13 @@ use TYPO3\Flow\Http\Request;
  */
 class IndexService implements IndexServiceInterface
 {
+
+
+    /**
+     * @Flow\Inject
+     * @var ContentContextFactory
+     */
+    protected $contentContextFactory;
 
 
     /**
@@ -77,6 +85,7 @@ class IndexService implements IndexServiceInterface
     private $workspace;
 
 
+
     /**
      * IndexService constructor.
      * @param Request $httpRequest
@@ -84,7 +93,9 @@ class IndexService implements IndexServiceInterface
     public function __construct()
     {
         $this->httpRequest = new Request($_GET, $_POST, $_FILES, $_SERVER);
-        //$this->workspace = ;
+
+
+
     }
 
 
@@ -272,10 +283,12 @@ class IndexService implements IndexServiceInterface
      */
     public function prepareNodeSelectionFromNode(Node $node)
     {
+        
 
-
-        $this->workspace = $node->getWorkspace();
-
+        foreach ($this->contentContextFactory->getInstances() as $context) {
+            $this->workspace = $context->getWorkspace();
+            break;
+        }
 
         $limit = false;
         $offset = false;

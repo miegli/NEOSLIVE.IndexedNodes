@@ -146,7 +146,12 @@ class IndexRepository extends Repository
         $nodeMatcherConditions = array();
 
         // set workspace query
-        if (isset($selection['workspace'])) $nodeMatcherConditions[] = $query->equals('nodeData.workspace', $selection['workspace']->getName());
+        if (isset($selection['workspace'])) {
+            $or = array();
+            if ($selection['workspace']->getName() != 'live') $or[] = $query->equals('nodeData.workspace', $selection['workspace']->getName());
+            $or[] = $query->equals('nodeData.workspace', 'live');
+            $nodeMatcherConditions[] = $query->logicalOr($or);
+        }
 
         // set nodetype query
         if (isset($selection['nodetype'])) $nodeMatcherConditions[] = $query->equals('nodeData.nodeType', $selection['nodetype']);
@@ -438,7 +443,6 @@ class IndexRepository extends Repository
 
         $data = array();
         foreach ($query->execute()->toArray() as $index) {
-
 
 
 
