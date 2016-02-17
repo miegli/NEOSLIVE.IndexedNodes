@@ -26,9 +26,10 @@ interface IndexServiceInterface
      *
      * @param NodeData $nodeData
      * @param string $propertyname
+     * @param string $workspacename
      * @return void
      */
-    public function setIndexValue(NodeData $nodeData,$propertyname);
+    public function setIndexValue(NodeData $nodeData,$propertyname,$workspacename);
 
 
 

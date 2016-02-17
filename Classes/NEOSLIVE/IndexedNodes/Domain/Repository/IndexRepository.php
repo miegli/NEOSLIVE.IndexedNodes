@@ -336,7 +336,7 @@ class IndexRepository extends Repository
 
 
             // set orderings
-            $orderingArray = array( 'nodeData.workspace' => 'ASC');
+            $orderingArray = array('orderWorkspaces' => 'DESC');
 
             if (isset($selection['nodetype']) && isset($selection['sort']) ) {
 

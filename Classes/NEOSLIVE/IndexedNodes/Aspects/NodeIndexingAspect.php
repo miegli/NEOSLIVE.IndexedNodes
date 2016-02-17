@@ -39,13 +39,16 @@ class NodeIndexingAspect
         if ($object instanceof Node) $nodeData = $object->getNodeData();
 
 
+
+
         if ($nodeData instanceof NodeData) {
 
                 if ($nodeData && $nodeData->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('properties',$nodeData->getNodeType()->getConfiguration('indexedNodes'))) {
 
+
                     // add property to nodedata index
                     foreach ($nodeData->getNodeType()->getConfiguration('indexedNodes')['properties'] as $propertyKey => $propertyVal) {
-                        $this->indexService->setIndexValue($nodeData, $propertyKey);
+                        $this->indexService->setIndexValue($nodeData, $propertyKey,$nodeData->getWorkspace()->getName());
                     }
 
                 }

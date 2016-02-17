@@ -115,6 +115,15 @@ class Index
     protected $orderIndexHash;
 
 
+    /**
+     * Ordering key for workspaces
+     *
+     * @var integer
+     * @ORM\Column(nullable=true)
+     */
+    protected $orderWorkspaces;
+
+
 
     /**
      * @param NodeData $nodeData
@@ -126,6 +135,24 @@ class Index
 
 
     }
+
+    /**
+     * @return int
+     */
+    public function getOrderWorkspaces()
+    {
+        return $this->orderWorkspaces;
+    }
+
+    /**
+     * @param int $orderWorkspaces
+     */
+    public function setOrderWorkspaces($orderWorkspaces)
+    {
+        $this->orderWorkspaces = $orderWorkspaces;
+    }
+
+
 
     /**
      * @param int $index

@@ -105,9 +105,10 @@ class IndexService implements IndexServiceInterface
      * @param NodeData $nodeData
      * @param string $propertyname
      * @param string $propertyvalue
+     * @param string $workspacename
      * @return void
      */
-    public function setIndexValue(NodeData $nodeData, $propertyname)
+    public function setIndexValue(NodeData $nodeData, $propertyname, $workspacename)
     {
 
 
@@ -122,6 +123,12 @@ class IndexService implements IndexServiceInterface
                 $this->reIndexAll($nodeData);
 
             }
+        }
+
+        if ($workspacename == 'live') {
+            $index->setOrderWorkspaces(0);
+        } else {
+            $index->setOrderWorkspaces(1);
         }
 
         $this->indexRepository->update($index);
