@@ -290,6 +290,7 @@ class IndexService implements IndexServiceInterface
             break;
         }
 
+
         $limit = false;
         $offset = false;
         $filter = array();

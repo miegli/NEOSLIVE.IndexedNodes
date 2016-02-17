@@ -10,6 +10,15 @@ prototype(NEOSLIVE.IndexedNodes:SelectionIten) < prototype(TYPO3.Neos:Content) {
 
     @exceptionHandler = 'TYPO3\\Neos\\TypoScript\\ExceptionHandlers\\NodeWrappingHandler'
 
+	@cache {
+		mode = 'uncached'
+		context {
+			1 = 'node'
+			2 = 'documentNode'
+		}
+	}
+
+
 }
 
 prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {

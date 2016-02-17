@@ -145,6 +145,8 @@ class IndexRepository extends Repository
         $query = $this->createQuery();
         $nodeMatcherConditions = array();
 
+
+
         // set workspace query
         if (isset($selection['workspace'])) {
             $or = array();
@@ -334,7 +336,8 @@ class IndexRepository extends Repository
 
 
             // set orderings
-            $orderingArray = array();
+            $orderingArray = array( 'nodeData.workspace' => 'ASC');
+
             if (isset($selection['nodetype']) && isset($selection['sort']) ) {
 
 
@@ -419,11 +422,9 @@ class IndexRepository extends Repository
 
             }
 
-
             if (count($orderingArray)) {
                 $query->setOrderings($orderingArray);
             }
-
 
 
         }
@@ -431,7 +432,6 @@ class IndexRepository extends Repository
 
         // set node matcher
         if (count($nodeMatcherConditions) > 0) $query->matching($query->logicalAnd($nodeMatcherConditions));
-
 
         // set limit
         if (isset($selection['limit'])) $query->setLimit($selection['limit']);
@@ -443,8 +443,6 @@ class IndexRepository extends Repository
 
         $data = array();
         foreach ($query->execute()->toArray() as $index) {
-
-
 
             if (isset($data[$index->getNodeData()->getIdentifier()]) && $index->getNodeData()->getWorkspace()->getName() == 'live') {
                 // skip double nodes
