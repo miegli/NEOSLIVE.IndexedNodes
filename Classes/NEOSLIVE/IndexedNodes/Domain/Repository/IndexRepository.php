@@ -161,7 +161,7 @@ class IndexRepository extends Repository
             // find nodes that inherit from abstract nodetype
                 $nodeMatcherConditions[] = $query->equals('nodeTypeAbstract', $selection['nodetype']);
             } else {
-            $nodeMatcherConditions[] = $query->equals('nodeData.nodeType', $selection['nodetype']);
+                $nodeMatcherConditions[] = $query->equals('nodeData.nodeType', $selection['nodetype']);
             }
         }
 
