@@ -12,6 +12,7 @@ namespace NEOSLIVE\IndexedNodes\Domain\Service;
  * source code.
  */
 
+use NEOSLIVE\IndexedNodes\Exception\IndexedNodesException;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeData;
 use TYPO3\TYPO3CR\Domain\Model\Node;
@@ -303,6 +304,7 @@ class IndexService implements IndexServiceInterface
         $filter = array();
         $sort = array();
         $nodetype = false;
+        $nodetypeisabstract = false;
         $entryNodes = array();
         $nodeParentPath = $node->getParentPath();
 
@@ -310,8 +312,10 @@ class IndexService implements IndexServiceInterface
         if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')) {
 
 
+
+
             // calculate nodetype name
-            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeType'])) {
+            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('nodeType',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes'))) {
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['nodeType'] as $key => $value) {
                     switch ($key) {
                         case 'property':
@@ -323,10 +327,15 @@ class IndexService implements IndexServiceInterface
                         case 'param':
                             if ($this->httpRequest->hasArgument($value) || $nodetype == false) $nodetype = addslashes($this->httpRequest->getArgument($value));
                             break;
+                        case 'abstract':
+                            $nodetypeisabstract = TRUE;
+                            break;
                         default:
                             break;
                     }
                 }
+            } else {
+                throw new IndexedNodesException($node->getNodeData()->getNodeType()->getName() . ' has no nodeType definition.');
             }
 
 
@@ -607,6 +616,7 @@ class IndexService implements IndexServiceInterface
             'filter' => $filter,
             'sort' => $sort,
             'nodetype' => $nodetype,
+            'nodetypeisabstract' => $nodetypeisabstract,
             'entryNodes' => $entryNodes,
             'workspace' => $this->workspace
         );

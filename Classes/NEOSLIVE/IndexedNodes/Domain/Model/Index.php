@@ -428,9 +428,12 @@ class Index
             $shortValue = strtolower(preg_replace('/[\xZZ]/', "", trim($indexData->getValueRaw())));
             $indexData->setValueInteger(intval($shortValue));
             $indexData->setValueDateTime($this->calculateDateFromString($indexData->getValueRaw()));
+            return $indexData;
+
         }
 
-        return $indexData;
+        return null;
+
 
 
     }

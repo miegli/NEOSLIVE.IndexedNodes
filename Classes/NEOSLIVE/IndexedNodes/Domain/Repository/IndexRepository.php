@@ -156,7 +156,14 @@ class IndexRepository extends Repository
         }
 
         // set nodetype query
-        if (isset($selection['nodetype'])) $nodeMatcherConditions[] = $query->equals('nodeData.nodeType', $selection['nodetype']);
+        if (isset($selection['nodetype'])) {
+            if (isset($selection['nodetypeisabstract']) && $selection['nodetypeisabstract']) {
+            // find nodes that inherit from abstract nodetype
+                $nodeMatcherConditions[] = $query->equals('nodeTypeAbstract', $selection['nodetype']);
+            } else {
+            $nodeMatcherConditions[] = $query->equals('nodeData.nodeType', $selection['nodetype']);
+            }
+        }
 
 
         // set entrypoint query
