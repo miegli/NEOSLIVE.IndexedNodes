@@ -283,6 +283,10 @@ class IndexRepository extends Repository
                                 $oProperty = 'nodeData.creationDateTime';
                                 break;
 
+                            case 'identifier':
+                                $oProperty = 'nodeData.identifier';
+                                break;
+
                         }
 
 
@@ -438,7 +442,7 @@ class IndexRepository extends Repository
 
 
         // set offset
-        if (isset($selection['offset'])) $query->setOffset($selection['offset']);
+        if (isset($selection['offset']) && $selection['offset'] != false) $query->setOffset($selection['offset']);
 
 
         $data = array();
@@ -452,6 +456,8 @@ class IndexRepository extends Repository
 
 
         }
+
+
 
 
       return $data;

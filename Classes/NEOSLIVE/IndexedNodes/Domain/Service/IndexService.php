@@ -128,7 +128,7 @@ class IndexService implements IndexServiceInterface
         if ($workspacename == 'live') {
             $index->setOrderWorkspaces(0);
         } else {
-            $index->setOrderWorkspaces(1);
+            $index->setOrderWorkspaces(0);
         }
 
         $this->indexRepository->update($index);
@@ -350,7 +350,7 @@ class IndexService implements IndexServiceInterface
             }
 
             // calculate limit offset, if limit isset
-            if ($limit && $node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['offset'])) {
+            if ($limit && $node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('offset',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')) ) {
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['offset'] as $key => $value) {
                     switch ($key) {
                         case 'property':
@@ -522,14 +522,14 @@ class IndexService implements IndexServiceInterface
             } else {
                 // set reference to self node
                 $entryNodes['self'] = array(
-                    'path' => $node->getParentPath()
+                    'path' => '/'
                 );
 
             }
 
 
             // calculate sorting
-            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['sort'])) {
+            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('sort',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes'))) {
 
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['sort'] as $nullkey => $sortValues) {
 
