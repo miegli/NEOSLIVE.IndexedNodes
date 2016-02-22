@@ -421,12 +421,14 @@ class Index
     public function setIndexData($property, $value)
     {
 
-        $indexData = $this->getIndexDataOrCreate($property);
-        $indexData->setValue($value);
-        $indexData->setValueRaw(strip_tags($value));
-        $shortValue = strtolower(preg_replace('/[\xZZ]/', "", trim($indexData->getValueRaw())));
-        $indexData->setValueInteger(intval($shortValue));
-        $indexData->setValueDateTime($this->calculateDateFromString($indexData->getValueRaw()));
+        if (is_string($value)) {
+            $indexData = $this->getIndexDataOrCreate($property);
+            $indexData->setValue($value);
+            $indexData->setValueRaw(strip_tags($value));
+            $shortValue = strtolower(preg_replace('/[\xZZ]/', "", trim($indexData->getValueRaw())));
+            $indexData->setValueInteger(intval($shortValue));
+            $indexData->setValueDateTime($this->calculateDateFromString($indexData->getValueRaw()));
+        }
 
         return $indexData;
 
