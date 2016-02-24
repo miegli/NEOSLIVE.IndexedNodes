@@ -335,7 +335,7 @@ class IndexService implements IndexServiceInterface
                     }
                 }
             } else {
-               // throw new IndexedNodesException($node->getNodeData()->getNodeType()->getName() . ' has no nodeType definition.');
+                throw new IndexedNodesException($node->getNodeData()->getNodeType()->getName() . ' has no nodeType definition.');
             }
 
 

@@ -243,7 +243,6 @@ class IndexRepository extends Repository
                             case 'datetime':
                                 $oProperty = 'indexData.valueDateTime';
                                 $filter['operand'] = new \DateTime(strtotime($filter['operand']));
-                                \typo3\flow\var_dump( $filter['operand']);
                                 break;
 
                             case 'integer':

@@ -35,9 +35,9 @@ class NodeHelper implements ProtectedContextAwareInterface {
 
         $nodesResult = $indexService->getNodes($node);
 
-
         foreach ($nodesResult as $identifier => $item) {
-            $nodes[] = $this->nodeFactory->createFromNodeData($item, $node->getContext());
+            $n = new \TYPO3\TYPO3CR\Domain\Model\Node($item,$node->getContext());
+            $nodes[] = $n->getNode('.');
         }
 
         return $nodes;
