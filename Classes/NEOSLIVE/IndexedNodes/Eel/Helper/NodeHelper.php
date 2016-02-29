@@ -46,6 +46,22 @@ class NodeHelper implements ProtectedContextAwareInterface {
     }
 
     /**
+     * Count indexed nodes
+     *
+     * @param Node $node
+     * @return integer
+     */
+    public function count(Node $node) {
+
+
+        $indexService = new IndexService();
+
+        return $indexService->countNodes($node);
+
+
+    }
+
+    /**
      * All methods are considered safe, i.e. can be executed from within Eel
      *
      * @param string $methodName

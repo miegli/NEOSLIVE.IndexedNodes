@@ -264,25 +264,9 @@ class IndexService implements IndexServiceInterface
     }
 
 
+
     /**
      * Get array of node selection properties
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
      *
      *
      *
@@ -300,7 +284,9 @@ class IndexService implements IndexServiceInterface
 
 
         $limit = false;
+        $limit_param_name = false;
         $offset = false;
+        $offset_param_name = false;
         $filter = array();
         $sort = array();
         $nodetype = false;
@@ -340,7 +326,7 @@ class IndexService implements IndexServiceInterface
 
 
             // calculate limit
-            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'])) {
+            if ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('limit',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes'))) {
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['limit'] as $key => $value) {
                     switch ($key) {
                         case 'property':
@@ -351,12 +337,22 @@ class IndexService implements IndexServiceInterface
                             break;
                         case 'param':
                             if ($this->httpRequest->hasArgument($value) || $limit == false) $limit = addslashes($this->httpRequest->getArgument($value));
+                                $limit_param_name = $value;
+                            if (strlen($limit)==0) $limit = false;
                             break;
                         default:
                             break;
                     }
                 }
             }
+
+            if (!$limit) {
+                // fetch default limit from internal params
+                $value = "_limit-".$node->getIdentifier();
+                if ($this->httpRequest->hasArgument($value)) $limit = addslashes($this->httpRequest->getArgument($value));
+                if (!$limit_param_name) $limit_param_name = $value;
+            }
+
 
             // calculate limit offset, if limit isset
             if ($limit && $node->getNodeData()->getNodeType()->getConfiguration('indexedNodes') && array_key_exists('offset',$node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')) ) {
@@ -370,14 +366,24 @@ class IndexService implements IndexServiceInterface
                             break;
                         case 'param':
                             if ($this->httpRequest->hasArgument($value) || $offset == false) $offset = addslashes($this->httpRequest->getArgument($value));
+                            $offset_param_name = $value;
+                            if (strlen($offset)==0) $offset = false;
                             break;
                         default:
                             break;
                     }
                 }
-
-
             }
+
+
+            if (!$offset) {
+                // fetch default offset from internal params
+                $value = "_offset-".$node->getIdentifier();
+                if ($this->httpRequest->hasArgument($value)) $offset = addslashes($this->httpRequest->getArgument($value));
+                if (!$offset_param_name) $offset_param_name = $value;
+                if (strlen($offset)==0) $offset = 0;
+            }
+
 
 
             // calculate filters
@@ -612,7 +618,9 @@ class IndexService implements IndexServiceInterface
 
         return array(
             'limit' => $limit,
+            'limit_param_name' => $limit_param_name,
             'offset' => $offset,
+            'offset_param_name' => $offset_param_name,
             'filter' => $filter,
             'sort' => $sort,
             'nodetype' => $nodetype,
@@ -636,6 +644,24 @@ class IndexService implements IndexServiceInterface
 
         return $this->indexRepository->getFilteredNodes(
             $this->prepareNodeSelectionFromNode($basenode)
+        );
+
+
+    }
+
+
+    /**
+     * Get indexed nodes by given node and its filters
+     *
+     * @param Node $basenode
+     * @return array
+     */
+    public function countNodes(Node $basenode)
+    {
+
+        return $this->indexRepository->getFilteredNodes(
+            $this->prepareNodeSelectionFromNode($basenode),
+            true
         );
 
 

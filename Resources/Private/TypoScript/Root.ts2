@@ -1,8 +1,8 @@
 
 prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {
 
-
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
+	@context.nodescount = ${NEOSLIVE.IndexedNodes.count(node)}
 
     # Render every item by its own TS object
 	renderer = TYPO3.Neos:ContentCase

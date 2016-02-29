@@ -134,10 +134,11 @@ class IndexRepository extends Repository
      *
      *
      * @param array $selection
+     * @param boolean $countonly
      * @return \TYPO3\Flow\Persistence\QueryResultInterface The query result
      * @see \TYPO3\Flow\Persistence\QueryInterface::execute()
      */
-    public function getFilteredNodes($selection)
+    public function getFilteredNodes($selection,$countonly=false)
     {
 
 
@@ -440,34 +441,45 @@ class IndexRepository extends Repository
         }
 
 
+
         // set node matcher
         if (count($nodeMatcherConditions) > 0) $query->matching($query->logicalAnd($nodeMatcherConditions));
 
-        // set limit
-        if (isset($selection['limit'])) $query->setLimit($selection['limit']);
 
 
-        // set offset
-        if (isset($selection['offset']) && $selection['offset'] != false) $query->setOffset($selection['offset']);
+
+        if ($countonly)  {
+
+            // count only query
+            return $query->execute()->count();
 
 
-        $data = array();
-        foreach ($query->execute()->toArray() as $index) {
-
-            if (isset($data[$index->getNodeData()->getIdentifier()]) && $index->getNodeData()->getWorkspace()->getName() == 'live') {
-                // skip double nodes
-            } else {
-                $data[$index->getNodeData()->getIdentifier()] = $index->getNodeData();
-            }
+        } else {
 
 
+                    // set limit
+                    if (isset($selection['limit'])) $query->setLimit($selection['limit']);
+
+
+                    // set offset
+                    if (isset($selection['offset']) && $selection['offset'] != false) $query->setOffset($selection['offset']);
+
+
+                    $data = array();
+                    foreach ($query->execute()->toArray() as $index) {
+
+                        if (isset($data[$index->getNodeData()->getIdentifier()]) && $index->getNodeData()->getWorkspace()->getName() == 'live') {
+                            // skip double nodes
+                        } else {
+                            $data[$index->getNodeData()->getIdentifier()] = $index->getNodeData();
+                        }
+
+
+                    }
+
+
+            return $data;
         }
-
-
-
-
-      return $data;
-
 
 
 
