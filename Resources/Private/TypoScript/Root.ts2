@@ -1,34 +1,11 @@
-# Container TS Object
-
-prototype(NEOSLIVE.IndexedNodes:SelectionIten) < prototype(TYPO3.Neos:Content)  {
-
-    templatePath = 'resource://NEOSLIVE.IndexedNodes/Private/Templates/NodeTypes/IndexedNodesSelectionItem.html'
-
-	renderer = TYPO3.Neos:ContentCase
-
-    @exceptionHandler = 'TYPO3\\Neos\\TypoScript\\ExceptionHandlers\\NodeWrappingHandler'
-
-	@cache {
-		mode = 'uncached'
-		context {
-			1 = 'node'
-			2 = 'documentNode'
-		}
-	}
-
-
-}
 
 prototype(NEOSLIVE.IndexedNodes:Selection) < prototype(TYPO3.Neos:Content) {
 
-	templatePath = 'resource://NEOSLIVE.IndexedNodes/Private/Templates/NodeTypes/IndexedNodesSelection.html'
-
-	@context.collectionnode = ${Neos.Node.nearestContentCollection(node.parent, this.nodePath)}
 
 	nodes = ${NEOSLIVE.IndexedNodes.get(node)}
 
     # Render every item by its own TS object
-    content = NEOSLIVE.IndexedNodes:SelectionIten
+	renderer = TYPO3.Neos:ContentCase
 
 	@cache {
 		mode = 'uncached'
