@@ -99,6 +99,10 @@ class PaginateViewHelper extends AbstractViewHelper
     protected $offsetParamName;
 
 
+    /**
+     * @var bool
+     */
+    protected $absoluteUrl;
 
 
 
@@ -106,10 +110,11 @@ class PaginateViewHelper extends AbstractViewHelper
      * @param integer $itemsPerPage items per site
      * @param NodeInterface $node The node of the list element. Optional, will be resolved from the TypoScript context by default.
      * @param integer $nodescount the count of indexed node selection. Optional, will be resolved from the TypoScript context by default.
+     * @param boolean $absoluteUrl
      * @return string The rendered property with a wrapping tag. In the user workspace this adds some required attributes for the RTE to work
      * @throws ViewHelperException
      */
-    public function render($itemsPerPage, NodeInterface $node = null, $nodescount = null)
+    public function render($itemsPerPage, NodeInterface $node = null, $nodescount = null, $absoluteUrl = false)
     {
 
         $view = $this->viewHelperVariableContainer->getView();
@@ -128,7 +133,6 @@ class PaginateViewHelper extends AbstractViewHelper
         }
 
 
-
         $configuration = $this->indexService->prepareNodeSelectionFromNode($node);
         $this->itemsPerPage = $itemsPerPage;
         $this->total = $nodescount;
@@ -136,6 +140,7 @@ class PaginateViewHelper extends AbstractViewHelper
         $this->limitParamName = $configuration['limit_param_name'];
         $this->offsetParamName = $configuration['offset_param_name'];
         $this->numberOfPages = ceil($this->total / (integer)$this->itemsPerPage);
+        $this->absoluteUrl = $absoluteUrl;
         if ($configuration['offset'] > 0) {
             $this->currentPage = ($configuration['offset'] / $this->itemsPerPage)+1;
         }
@@ -153,7 +158,6 @@ class PaginateViewHelper extends AbstractViewHelper
     protected function buildUrl($pagenum)
     {
 
-
        $params = $this->controllerContext->getRequest()->getArguments();
        $params[$this->offsetParamName] = $this->itemsPerPage*($pagenum-1);
 
@@ -162,7 +166,7 @@ class PaginateViewHelper extends AbstractViewHelper
           $params['node'],
           null,
           null,
-          false,
+          $this->absoluteUrl,
           $params
       );
     }
