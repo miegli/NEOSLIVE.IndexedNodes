@@ -446,6 +446,8 @@ class IndexRepository extends Repository
         if (count($nodeMatcherConditions) > 0) $query->matching($query->logicalAnd($nodeMatcherConditions));
 
 
+        // set limit
+        if (isset($selection['limit'])) $query->setLimit($selection['limit']);
 
 
         if ($countonly)  {
@@ -455,11 +457,6 @@ class IndexRepository extends Repository
 
 
         } else {
-
-
-                    // set limit
-                    if (isset($selection['limit'])) $query->setLimit($selection['limit']);
-
 
                     // set offset
                     if (isset($selection['offset']) && $selection['offset'] != false) $query->setOffset($selection['offset']);

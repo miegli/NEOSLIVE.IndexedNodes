@@ -95,8 +95,6 @@ class IndexService implements IndexServiceInterface
     {
         $this->httpRequest = new Request($_GET, $_POST, $_FILES, $_SERVER);
 
-
-
     }
 
 
@@ -359,7 +357,7 @@ class IndexService implements IndexServiceInterface
                 foreach ($node->getNodeData()->getNodeType()->getConfiguration('indexedNodes')['offset'] as $key => $value) {
                     switch ($key) {
                         case 'property':
-                            if ($node->getProperty($value)) $offset = "," . $node->getProperty($value);
+                            if ($node->getProperty($value)) $offset = $node->getProperty($value);
                             break;
                         case 'value':
                             $offset = $value;
@@ -374,6 +372,7 @@ class IndexService implements IndexServiceInterface
                     }
                 }
             }
+
 
 
             if (!$offset) {

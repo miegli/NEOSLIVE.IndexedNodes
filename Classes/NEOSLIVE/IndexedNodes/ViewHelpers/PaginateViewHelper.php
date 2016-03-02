@@ -18,6 +18,8 @@ use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TypoScript\TypoScriptObjects\Helpers\TypoScriptAwareViewInterface;
 use NEOSLIVE\IndexedNodes\Domain\Service\IndexService;
 use TYPO3\Neos\Service\LinkingService;
+use NEOSLIVE\IndexedNodes\Eel\Helper\NodeHelper;
+use TYPO3\Flow\Http\Request;
 
 /**
  * A view helper for pagination of indexed nodes list
@@ -28,6 +30,17 @@ use TYPO3\Neos\Service\LinkingService;
 class PaginateViewHelper extends AbstractViewHelper
 {
 
+
+    /**
+     * @Flow\Inject
+     * @var NodeHelper
+     */
+    protected $nodeHelper;
+
+    /**
+     * @var Request
+     */
+    protected $httpRequest;
 
     /**
      * @Flow\Inject
@@ -145,6 +158,25 @@ class PaginateViewHelper extends AbstractViewHelper
             $this->currentPage = ($configuration['offset'] / $this->itemsPerPage)+1;
         }
 
+
+
+        // set default requested arguments
+        if (!$this->controllerContext->getRequest()->hasArgument($this->offsetParamName)) {
+            $_GET[$this->offsetParamName] = '0';
+        }
+        if (!$this->controllerContext->getRequest()->hasArgument($this->limitParamName)) {
+            $_GET[$this->limitParamName] = $this->itemsPerPage;
+        }
+
+
+
+        // override nodes array from earlier eol query
+        if ($this->templateVariableContainer->exists('nodes')) {
+            $this->templateVariableContainer->remove('nodes');
+            $this->templateVariableContainer->add('nodes',$this->nodeHelper->get($node));
+        }
+
+        // build pagination array
         $this->templateVariableContainer->add('pagination', $this->buildPagination());
 
 
