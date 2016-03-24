@@ -14,16 +14,14 @@
           label: 'Optionen'
           position: 30
     inlineEditable: TRUE
-  properties:
-    selection:
-      type: 'references'
-      ui:
-        reloadIfChanged: TRUE
-        label: 'Einstiegspunkte'
-        inspector:
-          group: 'options'
-
-
+#  properties:
+#    selection:
+#      type: 'references'
+#      ui:
+#        reloadIfChanged: TRUE
+#        label: 'Einstiegspunkte'
+#        inspector:
+#          group: 'options'
 
 # sample definition
 # indexedNodes:
