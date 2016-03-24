@@ -37,7 +37,7 @@ class NodeHelper implements ProtectedContextAwareInterface {
 
         foreach ($nodesResult as $identifier => $item) {
             $n = new \TYPO3\TYPO3CR\Domain\Model\Node($item,$node->getContext());
-            $nodes[] = $n->getNode('.');
+            if ($n->getNode('.')!=null) $nodes[] = $n->getNode('.');
         }
 
         return $nodes;
